@@ -13,6 +13,7 @@
 * Vorschau formatiert Hashtags wie im Nostr-Post (inkl. Emoji & Sortierung)
 * Nach Absenden: Anzeige des relilab-Workshop-TN Profils mit Bild und Link zu Primal.net
 * Beitrag wird als Nostr Kind 1 über n8n gesendet
+* n8n-Workflow mit erklärenden Sticky Notes ergänzt und als `n8n/workflow.json` versioniert
 
 ## geplant
 
