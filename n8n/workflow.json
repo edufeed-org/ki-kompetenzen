@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "create-learning-task",
+        "options": {}
+      },
+      "name": "Receive Lernaufgabe",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        120,
+        -200
+      ],
+      "id": "a828b7fd-67ad-45a7-866a-99cfe73dbecf",
+      "webhookId": "d61045de-9adc-493f-a193-3a03dddc075e"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json.body;\nconst now = Math.floor(Date.now() / 1000);\n\n// Tags extrahieren\nconst parseTags = (str) => {\n  if (!str || typeof str !== 'string') return [];\n  return str.split(',').map(t => t.trim()).filter(Boolean);\n};\n\nconst tagList = parseTags(input.tags);\nconst used = new Set();\n\nconst kompetenzEmoji = {\n  \"verstehen\": \"🟢\",\n  \"anwenden\": \"🔵\",\n  \"reflektieren\": \"🟠\",\n  \"gestalten\": \"🟣\"\n};\n\nconst stufenEmoji = {\n  \"reproduktion\": \"1️⃣\",\n  \"rekonstruktion\": \"2️⃣\",\n  \"konstruktion\": \"3️⃣\"\n};\n\nconst hashtags = [];\n\n// 1. relilab immer zuerst\nif (tagList.includes(\"relilab\")) {\n  hashtags.push(\"#relilab\");\n  used.add(\"relilab\");\n}\n\n// 2. Kompetenzbereiche in fester Reihenfolge\n[\"verstehen\", \"anwenden\", \"reflektieren\", \"gestalten\"].forEach(k => {\n  if (tagList.includes(k)) {\n    hashtags.push(`${kompetenzEmoji[k]} #${k}`);\n    used.add(k);\n  }\n});\n\n// 3. Stufen in fester Reihenfolge\n[\"reproduktion\", \"rekonstruktion\", \"konstruktion\"].forEach(s => {\n  if (tagList.includes(s)) {\n    const emoji = stufenEmoji[s];\n    if (tagList.includes(emoji)) {\n      hashtags.push(`#${s} ${emoji}`);\n      used.add(s);\n      used.add(emoji);\n    } else {\n      hashtags.push(`#${s}`);\n      used.add(s);\n    }\n  }\n});\n\n// 4. Restliche Tags (nicht schon verwendet)\nfor (const t of tagList) {\n  if (used.has(t)) continue;\n  if (/^[a-zA-Z0-9_äöüÄÖÜ]+$/.test(t)) {\n    hashtags.push(`#${t}`);\n  } else {\n    hashtags.push(t); // Emoji oder Symbol direkt\n  }\n}\n\n// Nostr-Tags für das Event\nconst tags = [\n  ...tagList.map(t => [\"t\", t]),\n  [\"client\", \"n8n\"],\n  [\"published_at\", now.toString()]\n];\n\n// Finaler Content\nconst content = `${input.content?.trim() || \"\"}\\n\\n${hashtags.join(\" \")}`;\n\nreturn [\n  {\n    json: {\n      kind: 1,\n      created_at: now,\n      tags,\n      content,\n      pubkey: \"c6d8334cf6a3ff2eed60fe1b1c805307e62a3c4120540ad1b778688c30883d6d\"\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -200
+      ],
+      "id": "c831e589-611c-455a-a2ff-6540552a728f",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "resource": "event",
+        "content": "={{ $json.content }}",
+        "tags": "={{ $json.tags }}",
+        "relay": "wss://relay.primal.net/"
+      },
+      "type": "n8n-nodes-nostrobots.nostrobots",
+      "typeVersion": 1,
+      "position": [
+        920,
+        -200
+      ],
+      "id": "7e77fc9f-846b-4809-83d5-c1ad90025232",
+      "name": "Nostr Write",
+      "credentials": {
+        "nostrobotsApi": {
+          "id": "Gxbe7g2f7OH4rfZ2",
+          "name": "relilab-Workshop-TN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    event_id: $json.event.id\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        -200
+      ],
+      "id": "2d8b63fd-897f-482e-ab4c-dbd45a9ee8ea",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "content": "## 📥 Formular empfangen\nvon https://edufeed-org.github.io/ki-kompetenzen/index.html",
+        "height": 300,
+        "width": 360
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -320
+      ],
+      "id": "6b218f20-af5e-49fb-b83a-8cca0f166ec2",
+      "name": "Sticky Webhook"
+    },
+    {
+      "parameters": {
+        "content": "## Inhalte auswerten und formatieren\nHashtags korrekt sortieren, Emojis zuordnen und Nostr content bauen",
+        "height": 300,
+        "width": 340
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        360,
+        -320
+      ],
+      "id": "d230f78a-aa70-4734-a07b-0b31e54cbd3a",
+      "name": "Sticky Formatierung"
+    },
+    {
+      "parameters": {
+        "content": "## 🚀 Nostr-Event an Relay senden\nNostr-Event wird als Kind 1 an Relay gesendet (z. B. primal.net)",
+        "height": 300,
+        "width": 360
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        760,
+        -320
+      ],
+      "id": "a3dc71aa-71c4-49f7-8be9-5d414740b194",
+      "name": "Sticky Write"
+    },
+    {
+      "parameters": {
+        "content": "## 🔁 Rückgabe\nEvent-ID des geposteten Beitrags zur optionalen Anzeige im Frontend",
+        "height": 300,
+        "width": 360
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        -320
+      ],
+      "id": "b06fee04-a97d-4cdd-8366-fed9e2a21508",
+      "name": "Sticky Return"
+    }
+  ],
+  "connections": {
+    "Receive Lernaufgabe": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Nostr Write",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nostr Write": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "634e789e9cac462123b2b4acaedfe20e105965d27f018a60d1d4305ae72b1acb"
+  }
+}
