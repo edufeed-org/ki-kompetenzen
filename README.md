@@ -1,6 +1,6 @@
 # KI-Kompetenzen – Workshop & Mitmachplattform
 
-Dies ist das offizielle Repository zum offenen Workshop-Format **„KI-Kompetenzen in der religionsbezogenen Bildung“**.
+Dies ist das offizielle Repository zum offenen Workshop-Format **„KI-Kompetenzen in der religionsbezogenen Bildung“**. Die vier Kompetenzbereiche (Verstehen, Anwenden, Reflektieren, Gestalten) orientieren sich am adaptierbaren Modell von [Alles, S., Falck, J., Flick, M., & Schulz, R. (2025)](https://doi.org/10.5281/zenodo.15047793). Die dreistufige Struktur mit Reproduktion – Rekonstruktion – Konstruktion ist eine Umsetzung der angedachten Progressionsstufen und hier ergänzend für die religionsbezogene Bildung entwickelt.
 
 Der Workshop findet als Testlauf am [27.05.2025 um 17 Uhr im relilab statt (einfach kostenfrei teilnehmen) Infos hier](https://relilab.org/ki-kompetenzen-in-der-religionsbezogenen-bildung/) und [am 2. Juni 2025 um 16:00 Uhr hier auf der RPT25 in Luzern 🇨🇭](https://rpt25.ch/ki-als-werkzeug-vom-anwenden-zum-gestalten/)
 
@@ -144,8 +144,14 @@ Alle Beiträge mit `#relilab` und einem Kompetenz-Hashtag erscheinen automatisch
 
 ---
 
-## 🧾 Lizenz
+## 🧾 Lizenz & Modellreferenz
 
 Dieses Projekt steht unter der **Creative Commons Zero (CC0) Lizenz** – du darfst alles verwenden, verändern und weiterverbreiten, ohne Einschränkungen.
 
 🔗 [https://creativecommons.org/publicdomain/zero/1.0/](https://creativecommons.org/publicdomain/zero/1.0/)
+
+Das verwendete **Kompetenzmodell** zur Strukturierung der Beteiligungsformate (Reproduktion – Rekonstruktion – Konstruktion) basiert auf:
+
+> Alles, S., Falck, J., Flick, M., & Schulz, R. (2025). *KI-Kompetenzen für Lehrende und Lernende. Aus der Praxis für die Praxis – eine adaptierbare Basis.* VK\:KIWA. [https://doi.org/10.5281/zenodo.15047793](https://doi.org/10.5281/zenodo.15047793)
+
+Das Modell steht unter einer [CC BY-SA 4.0 Lizenz](https://creativecommons.org/licenses/by-sa/4.0/) und wurde hier auf die religionsbezogene Bildung übertragen.
