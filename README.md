@@ -8,13 +8,19 @@ Die Plattform dient zur gemeinschaftlichen Erarbeitung, Einreichung und Diskussi
 
 ---
 
-## 🚀 So machst du mit
+## 🚀 So machst du mit (drei Niveaustufen)
 
-### 1. 📝 Workshop-Beitrag posten (ohne Anmeldung)
+| Stufe              | Beschreibung                                     | Beteiligung                                                       | Beispiel                                |
+| ------------------ | ------------------------------------------------ | ----------------------------------------------------------------- | --------------------------------------- |
+| 1️⃣ Reproduktion   | Einfacher Einstieg ohne Anmeldung                | Formular ausfüllen, Kind-1-Beitrag wird automatisch gepostet      | "Kurze Idee zum KI-Einsatz"             |
+| 2️⃣ Rekonstruktion | Eigene Beiträge mit Markdown und Workshop-Zugang | Längere Inhalte mit Login posten oder erweitertes Formular nutzen | "Lernaufgabe mit Gliederung"            |
+| 3️⃣ Konstruktion   | Vollständig eigener Nostr-Account                | Selbst posten, kuratieren, kommentieren                           | "Eigener Artikel zur KI in der Bildung" |
+
+### 1️⃣ Reproduktion – ohne Anmeldung (Kind 1)
 
 Nutze das [Formular zur Beitragserstellung](https://edufeed-org.github.io/ki-kompetenzen/index.html), um eine kurze Notiz, Idee oder Lernimpuls zu teilen. Dein Beitrag wird direkt als **öffentliche Nostr-Notiz (Kind 1)** über den Account **relilab-Workshop-TN** gepostet.
 
-✅ Kein Account nötig – einfach ausprobieren!
+✅ Kein Account nötig – ideal zum Erproben!
 
 **Hashtagstruktur:**
 
@@ -22,22 +28,31 @@ Nutze das [Formular zur Beitragserstellung](https://edufeed-org.github.io/ki-kom
 * ein Kompetenzbereich: `#verstehen`, `#anwenden`, `#reflektieren`, `#gestalten`
 * optional eine Stufe: `#reproduktion 1️⃣`, `#rekonstruktion 2️⃣`, `#konstruktion 3️⃣`
 
-🔁 Der Beitrag wird automatisch richtig formatiert und mit Emojis angereichert.
-
-**Beispiel:**
-
-> 🔵 #anwenden | #rekonstruktion 2️⃣
-> Erstelle Bibel-Selfies mit KI und teile Bilder & Prompts als #OER.
-> Hashtags: `#relilab #anwenden #rekonstruktion 2️⃣`
+🔁 Der Beitrag wird automatisch formatiert und mit Emojis angereichert.
 
 ➡️ [Jetzt Formular ausfüllen](https://edufeed-org.github.io/ki-kompetenzen/index.html)
 
-🧾 Alle diese Beiträge findest du gesammelt im Profil:
+🧾 Beiträge sind sichtbar unter:
 🔗 [relilab-Workshop-TN auf Primal](https://primal.net/p/nprofile1qqswm0d4efjt7japeqfx77k09mffw0udn0xyduxad7sn4xgw5grkm4cdk2e0h)
 
 ---
 
-### 2. 🧑‍💻 Eigene Aufgaben & längere Beiträge verfassen (mit Account)
+### 2️⃣ Rekonstruktion – mit bereitgestelltem Zugang (längere Beiträge mit Markdown)
+
+Wenn du mehr ausprobieren möchtest oder eine eigene Aufgabe formulieren willst, nutze den bereitgestellten Tagungs-Account **„RPT25“** oder deinen eigenen Primal-Account:
+
+* Zugangscode (nsec):
+  `nsec1qtz5r9sn5hthjqwz8063xjjqx58ftdt0nhrjtszrtrj27qcetckqrhvf8x`
+* PIN: `1234`
+
+📲 Anmelden unter: [https://primal.net/](https://primal.net/)
+
+* kurze Beiträge: **„New Note“**
+* längere Beiträge (z. B. eigene Lernaufgabe): [https://primal.net/myarticles](https://primal.net/myarticles)
+
+💡 Alternativ kannst du auch unser erweitertes [Markdown-Formular für längere Beiträge](https://edufeed-org.github.io/ki-kompetenzen/langbeitrag.html) nutzen. Dort sind Beispielstrukturen und Formatierungen bereits eingebettet – ideal zum Weiterentwickeln oder Anpassen.
+
+👀 Diese Beiträge werden auf unserer Plattform gelistet, wenn sie `#relilab` und mindestens einen Kompetenz-Hashtag enthalten.
 
 Wenn du mehr ausprobieren möchtest oder eine eigene Aufgabe formulieren willst, nutze den bereitgestellten Tagungs-Account **„RPT25“** oder deinen eigenen Primal-Account:
 
@@ -54,7 +69,24 @@ Wenn du mehr ausprobieren möchtest oder eine eigene Aufgabe formulieren willst,
 
 ---
 
-### 3. 🌍 Beiträge automatisch sichtbar machen
+### 3️⃣ Konstruktion – mit eigenem Account (frei posten & kuratieren)
+
+Du möchtest unabhängig posten, deinen eigenen Nostr-Account verwenden und Inhalte dauerhaft selbst verwalten? Dann bist du auf dieser Stufe genau richtig.
+
+🛠 **Erstelle dir einen eigenen Account:**
+
+* Nutze z. B. [https://nsec.app](https://nsec.app), um einen Nostr-Schlüssel zu generieren (Achte darauf, deinen `nsec...` sicher aufzubewahren!)
+* Alternativ funktioniert auch [iris.to](https://iris.to) oder [Primal](https://primal.net) mit Account-Anlage via Login
+
+✍️ Danach kannst du:
+
+* Beiträge direkt in deinem Profil posten
+* Artikel schreiben (z. B. auf [https://primal.net/myarticles](https://primal.net/myarticles))
+* andere Beiträge kommentieren und liken
+
+💡 Wenn du `#relilab` und einen Kompetenzbereich (#verstehen, #anwenden …) verwendest, erscheint dein Beitrag automatisch auf:
+
+🔗 [https://ki-kompetenzen.npub.pro/](https://ki-kompetenzen.npub.pro/) – der gemeinsamen Plattform aller Workshop-Beiträge
 
 Alle Beiträge mit `#relilab` und einem Kompetenz-Hashtag erscheinen automatisch auf:
 
