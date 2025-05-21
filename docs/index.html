@@ -114,7 +114,7 @@
       };
 
       try {
-        const res = await fetch('https://n8n.rpi-virtuell.de/webhook-test/create-learning-task', {
+        const res = await fetch('https://n8n.rpi-virtuell.de/webhook/create-learning-task', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(json)
