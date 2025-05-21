@@ -2,8 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Lernaufgabe erstellen</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <title>Workshop-Beitrag posten</title>
   <style>
     body {
       font-family: sans-serif;
@@ -14,6 +13,7 @@
     textarea, input {
       width: 100%;
       margin-bottom: 1em;
+      font-size: 1em;
     }
     .success { color: green; }
     .error { color: red; }
@@ -22,6 +22,7 @@
       padding: 1em;
       background: #f9f9f9;
       min-height: 5em;
+      white-space: pre-wrap;
     }
     .tag-buttons button {
       margin: 0.2em;
@@ -44,11 +45,12 @@
 </head>
 <body>
 
-  <h1>📝 Lernaufgabe eingeben</h1>
+  <h1>🗣 Workshop-Beitrag posten</h1>
+  <p>Schreibe hier deinen Kommentar, deine Idee oder eine Notiz zum Workshop. Dein Beitrag wird auf Nostr als öffentliche Notiz veröffentlicht.</p>
 
   <form id="taskForm">
-    <label>Inhalt (Markdown möglich):<br>
-      <textarea name="content" rows="10" required></textarea>
+    <label>Beitrag:<br>
+      <textarea name="content" rows="6" required></textarea>
     </label><br>
 
     <div class="tag-buttons">
@@ -57,21 +59,20 @@
       <button type="button" onclick="addTag('anwenden')">🔵 Anwenden</button>
       <button type="button" onclick="addTag('reflektieren')">🟠 Reflektieren</button>
       <button type="button" onclick="addTag('gestalten')">🟣 Gestalten</button>
-      <br><strong>Niveaustufe wählen:</strong><br>
+      <br><strong>Niveaustufe (optional):</strong><br>
       <button type="button" onclick="addTag('1️⃣', 'reproduktion')">1️⃣ Reproduktion</button>
       <button type="button" onclick="addTag('2️⃣', 'rekonstruktion')">2️⃣ Rekonstruktion</button>
       <button type="button" onclick="addTag('3️⃣', 'konstruktion')">3️⃣ Konstruktion</button>
     </div>
 
-    <label>Eigene Tags (Komma getrennt):<br>
+    <label>Weitere Tags (optional, Komma getrennt):<br>
       <input type="text" name="tags" value="relilab">
     </label><br>
 
-    <button type="submit">✅ Lernaufgabe absenden</button>
+    <button type="submit">✅ Beitrag senden</button>
   </form>
 
   <h2>📄 Vorschau</h2>
-  <button onclick="toggleRaw()">🔄 Vorschau umschalten</button>
   <div id="preview" class="preview"></div>
   <p id="result"></p>
 
@@ -79,12 +80,19 @@
     const form = document.getElementById('taskForm');
     const result = document.getElementById('result');
     const preview = document.getElementById('preview');
-    let rawMode = false;
 
-    function toggleRaw() {
-      rawMode = !rawMode;
-      updatePreview();
-    }
+    const kompetenzEmoji = {
+      "verstehen": "🟢",
+      "anwenden": "🔵",
+      "reflektieren": "🟠",
+      "gestalten": "🟣"
+    };
+
+    const stufenEmoji = {
+      "reproduktion": "1️⃣",
+      "rekonstruktion": "2️⃣",
+      "konstruktion": "3️⃣"
+    };
 
     function addTag(...tagsToAdd) {
       const tagInput = form.querySelector('[name="tags"]');
@@ -95,12 +103,56 @@
         }
       }
       tagInput.value = currentTags.join(', ');
+      updatePreview();
     }
 
     function updatePreview() {
       const data = new FormData(form);
-      const content = data.get("content");
-      preview[rawMode ? 'textContent' : 'innerHTML'] = rawMode ? content : marked.parse(content);
+      const content = data.get("content") || "";
+      const tagString = data.get("tags") || "";
+      const tagList = tagString.split(',').map(t => t.trim()).filter(Boolean);
+
+      const hashtags = [];
+      const used = new Set();
+
+      if (tagList.includes("relilab")) {
+        hashtags.push("#relilab");
+        used.add("relilab");
+      }
+
+      for (const k in kompetenzEmoji) {
+        if (tagList.includes(k)) {
+          hashtags.push(`${kompetenzEmoji[k]} #${k}`);
+          used.add(k);
+          break;
+        }
+      }
+
+      for (const s in stufenEmoji) {
+        if (tagList.includes(s)) {
+          const emoji = stufenEmoji[s];
+          if (tagList.includes(emoji)) {
+            hashtags.push(`#${s} ${emoji}`);
+            used.add(s);
+            used.add(emoji);
+          } else {
+            hashtags.push(`#${s}`);
+            used.add(s);
+          }
+          break;
+        }
+      }
+
+      for (const t of tagList) {
+        if (used.has(t)) continue;
+        if (/^[a-zA-Z0-9_äöüÄÖÜ]+$/.test(t)) {
+          hashtags.push(`#${t}`);
+        } else {
+          hashtags.push(t);
+        }
+      }
+
+      preview.textContent = content.trim() + "\n\n" + hashtags.join(" ");
     }
 
     form.addEventListener('input', updatePreview);
@@ -121,7 +173,13 @@
         });
 
         if (res.ok) {
-          result.textContent = '✅ Lernaufgabe erfolgreich übermittelt!';
+          result.innerHTML = `
+            ✅ Beitrag erfolgreich gesendet!<br><br>
+            <a href="https://primal.net/p/nprofile1qqswm0d4efjt7japeqfx77k09mffw0udn0xyduxad7sn4xgw5grkm4cdk2e0h" target="_blank" style="display:inline-flex; align-items:center; gap:0.5em; text-decoration:none; font-weight:bold; font-size:1.1em;">
+              <img src="https://r2.primal.net/cache/b/5e/a1/b5ea1a98582537806b9c2b1c27542b4fcdd3983e0c5c9d9a0664d12bba40098c.png" alt="relilab-TN" style="height: 2em; border-radius: 50%;">
+              relilab-Workshop-TN auf Primal ansehen
+            </a>
+          `;
           result.className = 'success';
           form.reset();
           updatePreview();
