@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Lernaufgabe erstellen</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 1em;
+    }
+    textarea, input {
+      width: 100%;
+      margin-bottom: 1em;
+    }
+    .success { color: green; }
+    .error { color: red; }
+    .preview {
+      border: 1px solid #ccc;
+      padding: 1em;
+      background: #f9f9f9;
+      min-height: 5em;
+    }
+    .tag-buttons button {
+      margin: 0.2em;
+    }
+    button[type="submit"] {
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 1em 2em;
+      font-size: 1.2em;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+      transition: background-color 0.2s ease;
+    }
+    button[type="submit"]:hover {
+      background-color: #222;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📝 Lernaufgabe eingeben</h1>
+
+  <form id="taskForm">
+    <label>Inhalt (Markdown möglich):<br>
+      <textarea name="content" rows="10" required></textarea>
+    </label><br>
+
+    <div class="tag-buttons">
+      <strong>Kompetenzbereich wählen:</strong><br>
+      <button type="button" onclick="addTag('verstehen')">🟢 Verstehen</button>
+      <button type="button" onclick="addTag('anwenden')">🔵 Anwenden</button>
+      <button type="button" onclick="addTag('reflektieren')">🟠 Reflektieren</button>
+      <button type="button" onclick="addTag('gestalten')">🟣 Gestalten</button>
+      <br><strong>Niveaustufe wählen:</strong><br>
+      <button type="button" onclick="addTag('1️⃣', 'reproduktion')">1️⃣ Reproduktion</button>
+      <button type="button" onclick="addTag('2️⃣', 'rekonstruktion')">2️⃣ Rekonstruktion</button>
+      <button type="button" onclick="addTag('3️⃣', 'konstruktion')">3️⃣ Konstruktion</button>
+    </div>
+
+    <label>Eigene Tags (Komma getrennt):<br>
+      <input type="text" name="tags" value="relilab">
+    </label><br>
+
+    <button type="submit">✅ Lernaufgabe absenden</button>
+  </form>
+
+  <h2>📄 Vorschau</h2>
+  <button onclick="toggleRaw()">🔄 Vorschau umschalten</button>
+  <div id="preview" class="preview"></div>
+  <p id="result"></p>
+
+  <script>
+    const form = document.getElementById('taskForm');
+    const result = document.getElementById('result');
+    const preview = document.getElementById('preview');
+    let rawMode = false;
+
+    function toggleRaw() {
+      rawMode = !rawMode;
+      updatePreview();
+    }
+
+    function addTag(...tagsToAdd) {
+      const tagInput = form.querySelector('[name="tags"]');
+      const currentTags = tagInput.value.split(',').map(t => t.trim()).filter(Boolean);
+      for (const tag of tagsToAdd) {
+        if (!currentTags.includes(tag)) {
+          currentTags.push(tag);
+        }
+      }
+      tagInput.value = currentTags.join(', ');
+    }
+
+    function updatePreview() {
+      const data = new FormData(form);
+      const content = data.get("content");
+      preview[rawMode ? 'textContent' : 'innerHTML'] = rawMode ? content : marked.parse(content);
+    }
+
+    form.addEventListener('input', updatePreview);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const json = {
+        content: formData.get('content'),
+        tags: formData.get('tags')
+      };
+
+      try {
+        const res = await fetch('https://n8n.rpi-virtuell.de/webhook-test/create-learning-task', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(json)
+        });
+
+        if (res.ok) {
+          result.textContent = '✅ Lernaufgabe erfolgreich übermittelt!';
+          result.className = 'success';
+          form.reset();
+          updatePreview();
+        } else {
+          const errorText = await res.text();
+          result.textContent = `❌ Fehler: ${res.status} – ${errorText}`;
+          result.className = 'error';
+        }
+      } catch (err) {
+        result.textContent = '❌ Netzwerkfehler oder CORS-Problem';
+        result.className = 'error';
+      }
+    });
+
+    updatePreview();
+  </script>
+
+</body>
+</html>
