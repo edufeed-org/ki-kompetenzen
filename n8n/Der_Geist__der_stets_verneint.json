@@ -1,0 +1,152 @@
+{
+  "name": "Der Geist, der stets verneint",
+  "nodes": [
+    {
+      "parameters": {
+        "publickey": "npub1w80cfuqk3rlg6gahz2unlj8ek3lwel4wlc6c6vx36kxe60nyq4pshqh2g5",
+        "relay1": "wss://relay.primal.net",
+        "relay2": "wss://relay.damus.io"
+      },
+      "type": "n8n-nodes-nostrobots.nostrobotsEventTrigger",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        0
+      ],
+      "id": "7f92ef1d-66aa-4837-be09-84bd6c178724",
+      "name": "[BETA]Nostr Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.content }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Du bist der Geist der stets verneint. Ignoriere aus der User Message das \"nostr:npub1w80cfuqk3rlg6gahz2unlj8ek3lwel4wlc6c6vx36kxe60nyq4pshqh2g5\" und antworte auf den Inhalt auf eine süffisante, ironische und nach Goethe stets ins Gegenteil hinterfragende Art und Weise. "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -60,
+        0
+      ],
+      "id": "fd6ad9eb-7370-4cfa-8ff6-c52caf86d92f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-exp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        180
+      ],
+      "id": "cf1e09b8-cf35-41a9-bcac-92eac899ca60",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "n7apmG8NXn3k2rgl",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "event",
+        "content": "={{ $json.content }}",
+        "tags": "={{ $json.tags }}"
+      },
+      "type": "n8n-nodes-nostrobots.nostrobots",
+      "typeVersion": 1,
+      "position": [
+        560,
+        0
+      ],
+      "id": "f49190b2-569f-496c-a448-1ace1e635d3f",
+      "name": "Nostr Write",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "credentials": {
+        "nostrobotsApi": {
+          "id": "WUTCdWQVS6FrtTbA",
+          "name": "@derVerneiner"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 💡 Sticky Note: Hole Originaldaten aus dem Trigger\nconst originalEvent = $json;          // enthält id, pubkey etc.\nconst originalId = originalEvent.id;\nconst originalPubkey = originalEvent.pubkey;\n\n// 💡 Sticky Note: Hole AI-Antwort aus dem AI Agent\nconst aiOutput = $node[\"AI Agent\"].json.output; // Name des AI Agent Node anpassen, falls anders!\n\n// 💡 Sticky Note: Baue die NIP-10-konformen Tags\nconst tags = [\n  [\"e\", $('[BETA]Nostr Trigger').first().json.id, \"\", \"root\"],         // Antwort auf Event\n  [\"p\", $('[BETA]Nostr Trigger').first().json.pubkey]      // Antwort auf Autor\n];\n\n// 💡 Sticky Note: Erstelle das Event-Objekt\nconst replyEvent = {\n  kind: 1,                                  // Standard-Post-Event\n  created_at: Math.floor(Date.now() / 1000),// aktueller Timestamp\n  tags: tags,                               // Thread-Tags anhängen\n  content: aiOutput                         // AI-generierte Antwort\n  // pubkey, id, sig → werden später automatisch ergänzt\n};\n\n// 💡 Sticky Note: Übergib als n8n-kompatibles Objekt\nreturn [\n  {\n    json: replyEvent\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        0
+      ],
+      "id": "22be1480-d25e-4b80-8fe9-341ee3eda24d",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "[BETA]Nostr Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Nostr Write",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c2755147-4f4f-4743-b9e3-a663444cdcda",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "634e789e9cac462123b2b4acaedfe20e105965d27f018a60d1d4305ae72b1acb"
+  },
+  "id": "udNtDAE9JOzFxX4W",
+  "tags": []
+}
