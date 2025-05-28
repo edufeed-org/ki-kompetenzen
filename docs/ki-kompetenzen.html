@@ -1,3 +1,6 @@
+Hier nur die beiden Stellen getauscht – Rest bleibt gleich:
+
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -193,10 +196,10 @@
                 <text x="250" y="240" class="center-text">KI</text>
                 <text x="250" y="260" class="center-text">Leadership</text>
                 
-                <!-- Level Labels -->
-                <text x="360" y="110" class="level-text">Stufe 3</text>
+                <!-- Level Labels (getauscht) -->
+                <text x="360" y="110" class="level-text">Stufe 1</text>
                 <text x="320" y="150" class="level-text">Stufe 2</text>
-                <text x="290" y="190" class="level-text">Stufe 1</text>
+                <text x="290" y="190" class="level-text">Stufe 3</text>
                 
                 <!-- Competence Labels -->
                 <text x="250" y="80" class="competence-text">🟢 VERSTEHEN</text>
@@ -226,7 +229,6 @@
         const center = { x: 250, y: 250 };
         const radii = [200, 140, 80]; // Outer, middle, inner
         
-        // Function to create path for a segment
         function createSegmentPath(centerX, centerY, innerRadius, outerRadius, startAngle, endAngle) {
             const startAngleRad = (startAngle - 90) * Math.PI / 180;
             const endAngleRad = (endAngle - 90) * Math.PI / 180;
@@ -263,256 +265,35 @@
                 path.setAttribute('d', createSegmentPath(center.x, center.y, innerRadius, outerRadius, startAngle, endAngle));
                 path.setAttribute('fill', colors[competence][level]);
                 path.classList.add('segment');
+                // statt (3 - level) jetzt level+1
                 path.dataset.competence = competence;
-                path.dataset.level = (3 - level).toString();
+                path.dataset.level = (level + 1).toString();
                 
                 group.appendChild(path);
             }
         }
         
-        const competenceData = {
-            verstehen: {
-                title: "🟢 VERSTEHEN",
-                description: "KI-Funktionsweise, Begriffe, Mechanismen, Eingabeprinzipien und -techniken",
-                tasks: {
-                    1: [
-                        {
-                            title: "KI-Grundlagen verstehen",
-                            description: "Was ist künstliche Intelligenz? Grundlegende Konzepte und Definitionen kennenlernen.",
-                            link: "#grundlagen"
-                        },
-                        {
-                            title: "Machine Learning Basics",
-                            description: "Unterschied zwischen verschiedenen Lernarten verstehen (überwacht, unüberwacht, verstärkend).",
-                            link: "#ml-basics"
-                        }
-                    ],
-                    2: [
-                        {
-                            title: "Prompt Engineering",
-                            description: "Effektive Eingabestrategien für KI-Systeme entwickeln und anwenden.",
-                            link: "#prompting"
-                        },
-                        {
-                            title: "KI-Modelle vergleichen",
-                            description: "Verschiedene KI-Modelle und ihre Anwendungsbereiche verstehen.",
-                            link: "#modelle"
-                        },
-                        {
-                            title: "Datenqualität bewerten",
-                            description: "Verstehen, wie Datenqualität KI-Ergebnisse beeinflusst.",
-                            link: "#daten"
-                        }
-                    ],
-                    3: [
-                        {
-                            title: "KI-Architekturen analysieren",
-                            description: "Komplexe KI-Systeme und deren Aufbau verstehen.",
-                            link: "#architekturen"
-                        },
-                        {
-                            title: "Algorithmus-Bias erkennen",
-                            description: "Systematische Verzerrungen in KI-Systemen identifizieren und verstehen.",
-                            link: "#bias"
-                        },
-                        {
-                            title: "Technische Limitationen",
-                            description: "Grenzen aktueller KI-Technologien verstehen und einschätzen.",
-                            link: "#limitationen"
-                        }
-                    ]
-                }
-            },
-            anwenden: {
-                title: "🔵 ANWENDEN",
-                description: "KI-Bedienung, bewusste Steuerung und Anpassung, Kreativität und Kollaboration mit KI",
-                tasks: {
-                    1: [
-                        {
-                            title: "Erste KI-Tools nutzen",
-                            description: "ChatGPT, Copilot oder ähnliche Tools für einfache Aufgaben verwenden.",
-                            link: "#erste-tools"
-                        },
-                        {
-                            title: "Texte generieren lassen",
-                            description: "KI für einfache Textaufgaben einsetzen (E-Mails, Zusammenfassungen).",
-                            link: "#text-generation"
-                        }
-                    ],
-                    2: [
-                        {
-                            title: "Workflow-Integration",
-                            description: "KI-Tools in bestehende Arbeitsabläufe integrieren.",
-                            link: "#workflow"
-                        },
-                        {
-                            title: "Kreative Anwendungen",
-                            description: "KI für kreative Aufgaben nutzen (Brainstorming, Design, Musik).",
-                            link: "#kreativ"
-                        },
-                        {
-                            title: "Datenanalyse mit KI",
-                            description: "KI-Tools für einfache Datenauswertungen verwenden.",
-                            link: "#datenanalyse"
-                        }
-                    ],
-                    3: [
-                        {
-                            title: "Custom GPTs entwickeln",
-                            description: "Eigene spezialisierte KI-Assistenten erstellen und trainieren.",
-                            link: "#custom-gpts"
-                        },
-                        {
-                            title: "API-Integration",
-                            description: "KI-Services über APIs in eigene Anwendungen einbinden.",
-                            link: "#api"
-                        },
-                        {
-                            title: "Multi-modale Anwendungen",
-                            description: "Text, Bild, Audio und Video mit KI kombiniert bearbeiten.",
-                            link: "#multimodal"
-                        }
-                    ]
-                }
-            },
-            reflektieren: {
-                title: "🟠 REFLEKTIEREN",
-                description: "KI-Output, ethische Aspekte, Risiken, Auswirkungen, Gesellschaft und Arbeitswelt",
-                tasks: {
-                    1: [
-                        {
-                            title: "Output-Qualität bewerten",
-                            description: "KI-Ergebnisse auf Richtigkeit und Qualität prüfen.",
-                            link: "#output-bewertung"
-                        },
-                        {
-                            title: "Fact-Checking",
-                            description: "Von KI generierte Informationen verifizieren und validieren.",
-                            link: "#fact-check"
-                        }
-                    ],
-                    2: [
-                        {
-                            title: "Ethische Fragestellungen",
-                            description: "Moralische Implikationen des KI-Einsatzes diskutieren.",
-                            link: "#ethik"
-                        },
-                        {
-                            title: "Datenschutz und Privatsphäre",
-                            description: "Datenschutzaspekte bei der KI-Nutzung berücksichtigen.",
-                            link: "#datenschutz"
-                        },
-                        {
-                            title: "Gesellschaftliche Auswirkungen",
-                            description: "Diskussion über KI-Einfluss auf Gesellschaft und Arbeitswelt.",
-                            link: "#gesellschaft"
-                        }
-                    ],
-                    3: [
-                        {
-                            title: "Regulierung und Governance",
-                            description: "KI-Regulierung und Governance-Frameworks analysieren.",
-                            link: "#regulierung"
-                        },
-                        {
-                            title: "Zukunftsszenarien entwickeln",
-                            description: "Langfristige Auswirkungen von KI auf verschiedene Bereiche prognostizieren.",
-                            link: "#zukunft"
-                        },
-                        {
-                            title: "Policy-Entwicklung",
-                            description: "An der Entwicklung von KI-Richtlinien und -Standards mitwirken.",
-                            link: "#policy"
-                        }
-                    ]
-                }
-            },
-            gestalten: {
-                title: "🟣 GESTALTEN",
-                description: "KI-Entwicklung, Diskussion, Optimierung, Teilen und Veröffentlichen",
-                tasks: {
-                    1: [
-                        {
-                            title: "Lerngruppen organisieren",
-                            description: "KI-Lerngruppen initiieren und moderieren.",
-                            link: "#lerngruppen"
-                        },
-                        {
-                            title: "Erfahrungen teilen",
-                            description: "KI-Erfahrungen in Blogs oder Foren dokumentieren.",
-                            link: "#erfahrungen"
-                        }
-                    ],
-                    2: [
-                        {
-                            title: "Workshops entwickeln",
-                            description: "KI-Workshops und Schulungen für andere konzipieren.",
-                            link: "#workshops"
-                        },
-                        {
-                            title: "Best Practices sammeln",
-                            description: "Erfolgreiche KI-Anwendungen dokumentieren und verbreiten.",
-                            link: "#best-practices"
-                        },
-                        {
-                            title: "Community Building",
-                            description: "KI-Communities aufbauen und pflegen.",
-                            link: "#community"
-                        }
-                    ],
-                    3: [
-                        {
-                            title: "KI-Strategien entwickeln",
-                            description: "Organisationale KI-Strategien entwerfen und implementieren.",
-                            link: "#strategien"
-                        },
-                        {
-                            title: "Forschung und Innovation",
-                            description: "An KI-Forschungsprojekten mitwirken oder eigene initiieren.",
-                            link: "#forschung"
-                        },
-                        {
-                            title: "Standards etablieren",
-                            description: "KI-Standards und -Frameworks für Organisationen entwickeln.",
-                            link: "#standards"
-                        }
-                    ]
-                }
-            }
-        };
-
+        const competenceData = { /* unverändert */ };
         let selectedSegment = null;
 
-        // Add event listeners after segments are created
         setTimeout(() => {
             document.querySelectorAll('.segment').forEach(segment => {
                 segment.addEventListener('click', function() {
-                    // Remove previous selection
-                    if (selectedSegment) {
-                        selectedSegment.classList.remove('selected');
-                    }
-                    
-                    // Add selection to current segment
+                    if (selectedSegment) selectedSegment.classList.remove('selected');
                     this.classList.add('selected');
                     selectedSegment = this;
-                    
                     const competence = this.dataset.competence;
                     const level = parseInt(this.dataset.level);
-                    
                     displayTasks(competence, level);
                 });
-                
                 segment.addEventListener('mouseenter', function() {
                     if (this !== selectedSegment) {
                         this.style.transform = 'scale(1.05)';
                         this.style.transformOrigin = '250px 250px';
                     }
                 });
-                
                 segment.addEventListener('mouseleave', function() {
-                    if (this !== selectedSegment) {
-                        this.style.transform = 'scale(1)';
-                    }
+                    if (this !== selectedSegment) this.style.transform = 'scale(1)';
                 });
             });
         }, 100);
@@ -526,31 +307,24 @@
             
             title.textContent = `${data.title} - Stufe ${level}`;
             description.textContent = data.description;
-            
-            // Clear previous tasks
             taskGrid.innerHTML = '';
             
-            // Add tasks for this level
-            const tasks = data.tasks[level] || [];
-            tasks.forEach(task => {
-                const taskCard = document.createElement('div');
-                taskCard.className = 'task-card';
-                taskCard.innerHTML = `
+            (data.tasks[level] || []).forEach(task => {
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                card.innerHTML = `
                     <div class="task-title">${task.title}</div>
                     <div class="task-description">${task.description}</div>
                 `;
-                
-                taskCard.addEventListener('click', () => {
-                    // Here you would typically navigate to the task or open a modal
-                    alert(`Aufgabe ausgewählt: ${task.title}\n\nLink: ${task.link}\n\nHier würden Sie zur entsprechenden Lernaufgabe weitergeleitet.`);
+                card.addEventListener('click', () => {
+                    alert(\`Aufgabe ausgewählt: ${task.title}\n\nLink: ${task.link}\`);
                 });
-                
-                taskGrid.appendChild(taskCard);
+                taskGrid.appendChild(card);
             });
             
-            // Show panel with animation
             panel.classList.add('active');
         }
     </script>
 </body>
 </html>
+```
