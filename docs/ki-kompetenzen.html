@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Kompetenzen Interaktiv</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .circle-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        
+        svg {
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+        }
+        
+        .segment {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            stroke: #fff;
+            stroke-width: 2;
+        }
+        
+        .segment:hover {
+            opacity: 0.8;
+            transform-origin: 250px 250px;
+        }
+        
+        .segment.selected {
+            stroke: #2c3e50;
+            stroke-width: 4;
+            filter: brightness(1.2);
+        }
+        
+        .center-text {
+            font-size: 18px;
+            font-weight: bold;
+            fill: #fff;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        .level-text {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #fff;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .competence-text {
+            font-size: 14px;
+            font-weight: bold;
+            fill: #2c3e50;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        .info-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-height: 200px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .info-panel.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .task-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .task-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .task-description {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 KI-Kompetenzen für Lehrende & Lernende</h1>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #27ae60;"></div>
+                <span>🟢 Verstehen</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3498db;"></div>
+                <span>🔵 Anwenden</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e67e22;"></div>
+                <span>🟠 Reflektieren</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #9b59b6;"></div>
+                <span>🟣 Gestalten</span>
+            </div>
+        </div>
+        
+        <div class="circle-container">
+            <svg width="500" height="500" id="competenceCircle">
+                <!-- Level 3 (Outer Ring) -->
+                <g id="level3"></g>
+                
+                <!-- Level 2 (Middle Ring) -->
+                <g id="level2"></g>
+                
+                <!-- Level 1 (Inner Ring) -->
+                <g id="level1"></g>
+                
+                <!-- Center Circle -->
+                <circle cx="250" cy="250" r="50" fill="#34495e"/>
+                <text x="250" y="240" class="center-text">KI</text>
+                <text x="250" y="260" class="center-text">Leadership</text>
+                
+                <!-- Level Labels -->
+                <text x="360" y="110" class="level-text">Stufe 3</text>
+                <text x="320" y="150" class="level-text">Stufe 2</text>
+                <text x="290" y="190" class="level-text">Stufe 1</text>
+                
+                <!-- Competence Labels -->
+                <text x="250" y="80" class="competence-text">🟢 VERSTEHEN</text>
+                <text x="420" y="260" class="competence-text">🔵 ANWENDEN</text>
+                <text x="250" y="440" class="competence-text">🟠 REFLEKTIEREN</text>
+                <text x="80" y="260" class="competence-text">🟣 GESTALTEN</text>
+            </svg>
+        </div>
+        
+        <div id="infoPanel" class="info-panel">
+            <h2 id="panelTitle">Wählen Sie ein Segment für Lernaufgaben</h2>
+            <p id="panelDescription">Klicken Sie auf eines der farbigen Segmente im Kreis, um die entsprechenden Lernaufgaben anzuzeigen.</p>
+            <div id="taskGrid" class="task-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Colors for each competence
+        const colors = {
+            verstehen: ['#27ae60', '#2ecc71', '#58d68d'],
+            anwenden: ['#3498db', '#5dade2', '#85c1e9'],
+            reflektieren: ['#e67e22', '#f39c12', '#f8c471'],
+            gestalten: ['#9b59b6', '#af7ac5', '#d2b4de']
+        };
+        
+        const competences = ['verstehen', 'anwenden', 'reflektieren', 'gestalten'];
+        const center = { x: 250, y: 250 };
+        const radii = [200, 140, 80]; // Outer, middle, inner
+        
+        // Function to create path for a segment
+        function createSegmentPath(centerX, centerY, innerRadius, outerRadius, startAngle, endAngle) {
+            const startAngleRad = (startAngle - 90) * Math.PI / 180;
+            const endAngleRad = (endAngle - 90) * Math.PI / 180;
+            
+            const x1 = centerX + innerRadius * Math.cos(startAngleRad);
+            const y1 = centerY + innerRadius * Math.sin(startAngleRad);
+            
+            const x2 = centerX + outerRadius * Math.cos(startAngleRad);
+            const y2 = centerY + outerRadius * Math.sin(startAngleRad);
+            
+            const x3 = centerX + outerRadius * Math.cos(endAngleRad);
+            const y3 = centerY + outerRadius * Math.sin(endAngleRad);
+            
+            const x4 = centerX + innerRadius * Math.cos(endAngleRad);
+            const y4 = centerY + innerRadius * Math.sin(endAngleRad);
+            
+            const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+            
+            return `M ${x1} ${y1} L ${x2} ${y2} A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${x3} ${y3} L ${x4} ${y4} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x1} ${y1} Z`;
+        }
+        
+        // Create segments
+        for (let level = 0; level < 3; level++) {
+            const group = document.getElementById(`level${3-level}`);
+            const outerRadius = radii[level];
+            const innerRadius = level === 2 ? 50 : radii[level + 1];
+            
+            for (let i = 0; i < 4; i++) {
+                const competence = competences[i];
+                const startAngle = i * 90;
+                const endAngle = (i + 1) * 90;
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', createSegmentPath(center.x, center.y, innerRadius, outerRadius, startAngle, endAngle));
+                path.setAttribute('fill', colors[competence][level]);
+                path.classList.add('segment');
+                path.dataset.competence = competence;
+                path.dataset.level = (3 - level).toString();
+                
+                group.appendChild(path);
+            }
+        }
+        
+        const competenceData = {
+            verstehen: {
+                title: "🟢 VERSTEHEN",
+                description: "KI-Funktionsweise, Begriffe, Mechanismen, Eingabeprinzipien und -techniken",
+                tasks: {
+                    1: [
+                        {
+                            title: "KI-Grundlagen verstehen",
+                            description: "Was ist künstliche Intelligenz? Grundlegende Konzepte und Definitionen kennenlernen.",
+                            link: "#grundlagen"
+                        },
+                        {
+                            title: "Machine Learning Basics",
+                            description: "Unterschied zwischen verschiedenen Lernarten verstehen (überwacht, unüberwacht, verstärkend).",
+                            link: "#ml-basics"
+                        }
+                    ],
+                    2: [
+                        {
+                            title: "Prompt Engineering",
+                            description: "Effektive Eingabestrategien für KI-Systeme entwickeln und anwenden.",
+                            link: "#prompting"
+                        },
+                        {
+                            title: "KI-Modelle vergleichen",
+                            description: "Verschiedene KI-Modelle und ihre Anwendungsbereiche verstehen.",
+                            link: "#modelle"
+                        },
+                        {
+                            title: "Datenqualität bewerten",
+                            description: "Verstehen, wie Datenqualität KI-Ergebnisse beeinflusst.",
+                            link: "#daten"
+                        }
+                    ],
+                    3: [
+                        {
+                            title: "KI-Architekturen analysieren",
+                            description: "Komplexe KI-Systeme und deren Aufbau verstehen.",
+                            link: "#architekturen"
+                        },
+                        {
+                            title: "Algorithmus-Bias erkennen",
+                            description: "Systematische Verzerrungen in KI-Systemen identifizieren und verstehen.",
+                            link: "#bias"
+                        },
+                        {
+                            title: "Technische Limitationen",
+                            description: "Grenzen aktueller KI-Technologien verstehen und einschätzen.",
+                            link: "#limitationen"
+                        }
+                    ]
+                }
+            },
+            anwenden: {
+                title: "🔵 ANWENDEN",
+                description: "KI-Bedienung, bewusste Steuerung und Anpassung, Kreativität und Kollaboration mit KI",
+                tasks: {
+                    1: [
+                        {
+                            title: "Erste KI-Tools nutzen",
+                            description: "ChatGPT, Copilot oder ähnliche Tools für einfache Aufgaben verwenden.",
+                            link: "#erste-tools"
+                        },
+                        {
+                            title: "Texte generieren lassen",
+                            description: "KI für einfache Textaufgaben einsetzen (E-Mails, Zusammenfassungen).",
+                            link: "#text-generation"
+                        }
+                    ],
+                    2: [
+                        {
+                            title: "Workflow-Integration",
+                            description: "KI-Tools in bestehende Arbeitsabläufe integrieren.",
+                            link: "#workflow"
+                        },
+                        {
+                            title: "Kreative Anwendungen",
+                            description: "KI für kreative Aufgaben nutzen (Brainstorming, Design, Musik).",
+                            link: "#kreativ"
+                        },
+                        {
+                            title: "Datenanalyse mit KI",
+                            description: "KI-Tools für einfache Datenauswertungen verwenden.",
+                            link: "#datenanalyse"
+                        }
+                    ],
+                    3: [
+                        {
+                            title: "Custom GPTs entwickeln",
+                            description: "Eigene spezialisierte KI-Assistenten erstellen und trainieren.",
+                            link: "#custom-gpts"
+                        },
+                        {
+                            title: "API-Integration",
+                            description: "KI-Services über APIs in eigene Anwendungen einbinden.",
+                            link: "#api"
+                        },
+                        {
+                            title: "Multi-modale Anwendungen",
+                            description: "Text, Bild, Audio und Video mit KI kombiniert bearbeiten.",
+                            link: "#multimodal"
+                        }
+                    ]
+                }
+            },
+            reflektieren: {
+                title: "🟠 REFLEKTIEREN",
+                description: "KI-Output, ethische Aspekte, Risiken, Auswirkungen, Gesellschaft und Arbeitswelt",
+                tasks: {
+                    1: [
+                        {
+                            title: "Output-Qualität bewerten",
+                            description: "KI-Ergebnisse auf Richtigkeit und Qualität prüfen.",
+                            link: "#output-bewertung"
+                        },
+                        {
+                            title: "Fact-Checking",
+                            description: "Von KI generierte Informationen verifizieren und validieren.",
+                            link: "#fact-check"
+                        }
+                    ],
+                    2: [
+                        {
+                            title: "Ethische Fragestellungen",
+                            description: "Moralische Implikationen des KI-Einsatzes diskutieren.",
+                            link: "#ethik"
+                        },
+                        {
+                            title: "Datenschutz und Privatsphäre",
+                            description: "Datenschutzaspekte bei der KI-Nutzung berücksichtigen.",
+                            link: "#datenschutz"
+                        },
+                        {
+                            title: "Gesellschaftliche Auswirkungen",
+                            description: "Diskussion über KI-Einfluss auf Gesellschaft und Arbeitswelt.",
+                            link: "#gesellschaft"
+                        }
+                    ],
+                    3: [
+                        {
+                            title: "Regulierung und Governance",
+                            description: "KI-Regulierung und Governance-Frameworks analysieren.",
+                            link: "#regulierung"
+                        },
+                        {
+                            title: "Zukunftsszenarien entwickeln",
+                            description: "Langfristige Auswirkungen von KI auf verschiedene Bereiche prognostizieren.",
+                            link: "#zukunft"
+                        },
+                        {
+                            title: "Policy-Entwicklung",
+                            description: "An der Entwicklung von KI-Richtlinien und -Standards mitwirken.",
+                            link: "#policy"
+                        }
+                    ]
+                }
+            },
+            gestalten: {
+                title: "🟣 GESTALTEN",
+                description: "KI-Entwicklung, Diskussion, Optimierung, Teilen und Veröffentlichen",
+                tasks: {
+                    1: [
+                        {
+                            title: "Lerngruppen organisieren",
+                            description: "KI-Lerngruppen initiieren und moderieren.",
+                            link: "#lerngruppen"
+                        },
+                        {
+                            title: "Erfahrungen teilen",
+                            description: "KI-Erfahrungen in Blogs oder Foren dokumentieren.",
+                            link: "#erfahrungen"
+                        }
+                    ],
+                    2: [
+                        {
+                            title: "Workshops entwickeln",
+                            description: "KI-Workshops und Schulungen für andere konzipieren.",
+                            link: "#workshops"
+                        },
+                        {
+                            title: "Best Practices sammeln",
+                            description: "Erfolgreiche KI-Anwendungen dokumentieren und verbreiten.",
+                            link: "#best-practices"
+                        },
+                        {
+                            title: "Community Building",
+                            description: "KI-Communities aufbauen und pflegen.",
+                            link: "#community"
+                        }
+                    ],
+                    3: [
+                        {
+                            title: "KI-Strategien entwickeln",
+                            description: "Organisationale KI-Strategien entwerfen und implementieren.",
+                            link: "#strategien"
+                        },
+                        {
+                            title: "Forschung und Innovation",
+                            description: "An KI-Forschungsprojekten mitwirken oder eigene initiieren.",
+                            link: "#forschung"
+                        },
+                        {
+                            title: "Standards etablieren",
+                            description: "KI-Standards und -Frameworks für Organisationen entwickeln.",
+                            link: "#standards"
+                        }
+                    ]
+                }
+            }
+        };
+
+        let selectedSegment = null;
+
+        // Add event listeners after segments are created
+        setTimeout(() => {
+            document.querySelectorAll('.segment').forEach(segment => {
+                segment.addEventListener('click', function() {
+                    // Remove previous selection
+                    if (selectedSegment) {
+                        selectedSegment.classList.remove('selected');
+                    }
+                    
+                    // Add selection to current segment
+                    this.classList.add('selected');
+                    selectedSegment = this;
+                    
+                    const competence = this.dataset.competence;
+                    const level = parseInt(this.dataset.level);
+                    
+                    displayTasks(competence, level);
+                });
+                
+                segment.addEventListener('mouseenter', function() {
+                    if (this !== selectedSegment) {
+                        this.style.transform = 'scale(1.05)';
+                        this.style.transformOrigin = '250px 250px';
+                    }
+                });
+                
+                segment.addEventListener('mouseleave', function() {
+                    if (this !== selectedSegment) {
+                        this.style.transform = 'scale(1)';
+                    }
+                });
+            });
+        }, 100);
+
+        function displayTasks(competence, level) {
+            const data = competenceData[competence];
+            const panel = document.getElementById('infoPanel');
+            const title = document.getElementById('panelTitle');
+            const description = document.getElementById('panelDescription');
+            const taskGrid = document.getElementById('taskGrid');
+            
+            title.textContent = `${data.title} - Stufe ${level}`;
+            description.textContent = data.description;
+            
+            // Clear previous tasks
+            taskGrid.innerHTML = '';
+            
+            // Add tasks for this level
+            const tasks = data.tasks[level] || [];
+            tasks.forEach(task => {
+                const taskCard = document.createElement('div');
+                taskCard.className = 'task-card';
+                taskCard.innerHTML = `
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-description">${task.description}</div>
+                `;
+                
+                taskCard.addEventListener('click', () => {
+                    // Here you would typically navigate to the task or open a modal
+                    alert(`Aufgabe ausgewählt: ${task.title}\n\nLink: ${task.link}\n\nHier würden Sie zur entsprechenden Lernaufgabe weitergeleitet.`);
+                });
+                
+                taskGrid.appendChild(taskCard);
+            });
+            
+            // Show panel with animation
+            panel.classList.add('active');
+        }
+    </script>
+</body>
+</html>
