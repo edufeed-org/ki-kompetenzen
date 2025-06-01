@@ -75,7 +75,10 @@ Du möchtest unabhängig posten, deinen eigenen Nostr-Account verwenden und Inha
 
 🛠 **Erstelle dir einen eigenen Account:**
 
-* Nutze z. B. [https://nsec.app](https://nsec.app), um einen Nostr-Schlüssel zu generieren (Achte darauf, deinen `nsec...` sicher aufzubewahren!)
+🛠 Erstelle dir einen eigenen Account:
+[Eigenen Nostr-Account erstellen](https://nstart.me/de?an=Primal&am=light&aa=203a8f&asb=yes&s=npub1f7jar3qnu269uyx5p0e4v24hqxjnxysxudvujza2ur5ehltvdeqsly2fx9,npub1ak7mtjnyha96rjqjdaav7tkjjulcmx7vgmcd6map82vsags8dhtsmecgtd)
+
+    Nutze z. B. [nstart.me](https://nstart.me/de?an=Primal&am=light&aa=203a8f&asb=yes&s=npub1f7jar3qnu269uyx5p0e4v24hqxjnxysxudvujza2ur5ehltvdeqsly2fx9,npub1ak7mtjnyha96rjqjdaav7tkjjulcmx7vgmcd6map82vsags8dhtsmecgtd), um einen Nostr-Schlüssel zu generieren (Achte darauf, deinen nsec... sicher aufzubewahren!)
 * Alternativ funktioniert auch [iris.to](https://iris.to) oder [Primal](https://primal.net) mit Account-Anlage via Login
 
 ✍️ Danach kannst du:
